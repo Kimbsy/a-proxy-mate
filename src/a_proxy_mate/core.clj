@@ -42,6 +42,8 @@
 
 (defn wrap-text
   [text]
+  ;; @TODO: need to take existing paragraphs into account (see
+  ;; emrakul, the promised end)
   (->> (partition-all max-chars text)
        (map #(apply str %))
        (map #(str % "\n"))
@@ -68,6 +70,6 @@
 ;; (println (generate-proxy "ghalta"))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
+  ;; @TODO: can we straight up write out to the printer on the serial port?
   (println (generate-proxy (first args))))
