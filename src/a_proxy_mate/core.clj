@@ -72,4 +72,9 @@
 (defn -main
   [& args]
   ;; @TODO: can we straight up write out to the printer on the serial port?
-  (println (generate-proxy (first args))))
+  (let [search-term (first args)
+        copies (if (second args)
+                 (read-string (second args))
+                 1)]
+    (doseq [i (range (int copies))]
+      (println (generate-proxy search-term)))))
