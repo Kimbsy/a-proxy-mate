@@ -96,4 +96,6 @@
                  (read-string (second args))
                  1)]
     (doseq [i (range (int copies))]
-      (print-proxy search-term))))
+      (-> search-term
+          generate-proxy
+          print-proxy))))
