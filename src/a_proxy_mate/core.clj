@@ -1,7 +1,8 @@
 (ns a-proxy-mate.core
   (:gen-class)
-  (:require [org.httpkit.client :as http]
-            [clojure.data.json :as json]))
+  (:require [clojure.data.json :as json]
+            [clojure.string :as s]
+            [org.httpkit.client :as http]))
 
 (def base-url "https://api.scryfall.com")
 (def fuzzy-url (str base-url "/cards/named?fuzzy="))
@@ -49,13 +50,17 @@
   []
   (apply str (take max-chars (repeat "-"))))
 
-(defn wrap-text
-  [text]
-  ;; @TODO: need to take existing paragraphs into account (see
-  ;; emrakul, the promised end)
-  (->> (partition-all max-chars text)
+(defn wrap-line
+  [line]
+  (->> (partition-all max-chars line)
        (map #(apply str %))
        (map #(str % "\n"))
+       (apply str)))
+
+(defn wrap-text
+  [text]
+  (->> (s/split text #"\n")
+       (map wrap-line)
        (apply str)))
 
 (defn replace-funky-chars
@@ -67,13 +72,13 @@
 (defn format-proxy
   "Format the string for a proxy ready to be printed."
   [{:keys [name mana_cost type_line oracle_text power toughness]}]
-  (-> (str (border) "\n\n"
+  (-> (str (border) "\n"
            (wrap-text (lr-align name mana_cost)) "\n\n"
            (wrap-text type_line) "\n\n"
            (wrap-text oracle_text) "\n\n"
            (when (and power toughness)
              (str power "/" toughness "\n\n"))
-           (border) "\n")
+           (border) "\n\n")
       replace-funky-chars))
 
 (defn generate-proxy
