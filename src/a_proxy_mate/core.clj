@@ -12,7 +12,7 @@
            (tp/wrap-text oracle_text) "\n\n"
            (when (and power toughness)
              (str power "/" toughness "\n\n"))
-           (border) "\n\n")
+           (tp/border) "\n\n")
       tp/replace-funky-chars
       tp/bold))
 
