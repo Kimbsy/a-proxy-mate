@@ -7,13 +7,17 @@
 (def fuzzy-url (str base-url "/cards/named?fuzzy="))
 (def relevant-details ["name" "mana_cost" "type_line" "oracle_text" "power" "toughness"])
 (def max-chars 32)
+(def serial-file-descriptor "/dev/serial0")
 
 (defn fuzzy-search
+  "Hit up scryfall to find a card using the card name fuzzy search."
   [term]
   (-> @(http/get (str fuzzy-url (http/url-encode term)))
       :body
       json/read-str))
 
+;; Memoize the search function so we're not spamming the API during
+;; tests.
 (def memoized-search (memoize fuzzy-search))
 
 (defn keywordize-key
@@ -21,6 +25,8 @@
   [(keyword k) v])
 
 (defn extract-details
+  "Grab the fields we care about and turn them into a keyword => string
+  map."
   [result]
   (->> (-> result
            (select-keys relevant-details))
@@ -28,6 +34,8 @@
        (into {})))
 
 (defn lr-align
+  "Construct a string with one part aligned left and the other aligned
+  right."
   [left-text right-text]
   (let [l-count (count left-text)
         r-count (count right-text)
@@ -37,6 +45,7 @@
          right-text)))
 
 (defn border
+  "Generate a hyphen border."
   []
   (apply str (take max-chars (repeat "-"))))
 
@@ -49,32 +58,42 @@
        (map #(str % "\n"))
        (apply str)))
 
+(defn replace-funky-chars
+  "The printer can't do all characters."
+  [text]
+  (-> text
+      (clojure.string/replace "—" "-")))
+
 (defn format-proxy
+  "Format the string for a proxy ready to be printed."
   [{:keys [name mana_cost type_line oracle_text power toughness]}]
-  (str (border) "\n\n"
-       (wrap-text (lr-align name mana_cost)) "\n\n"
-       (wrap-text type_line) "\n\n"
-       (wrap-text oracle_text) "\n\n"
-       (when (and power toughness)
-         (str power "/" toughness "\n\n"))
-       (border) "\n"))
+  (-> (str (border) "\n\n"
+           (wrap-text (lr-align name mana_cost)) "\n\n"
+           (wrap-text type_line) "\n\n"
+           (wrap-text oracle_text) "\n\n"
+           (when (and power toughness)
+             (str power "/" toughness "\n\n"))
+           (border) "\n")
+      replace-funky-chars))
 
 (defn generate-proxy
+  "Generate a proxy from a search term."
   [search-term]
   (-> search-term
       memoized-search
       extract-details
       format-proxy))
 
-;; (println (generate-proxy "lightning bolt"))
-;; (println (generate-proxy "ghalta"))
+(defn print-proxy
+  "Send a proxy over the serial port to the printer."
+  [proxy]
+  (spit serial-file-descriptor proxy))
 
 (defn -main
   [& args]
-  ;; @TODO: can we straight up write out to the printer on the serial port?
   (let [search-term (first args)
         copies (if (second args)
                  (read-string (second args))
                  1)]
     (doseq [i (range (int copies))]
-      (println (generate-proxy search-term)))))
+      (print-proxy search-term))))
