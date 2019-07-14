@@ -1,5 +1,4 @@
 (ns a-proxy-mate.core
-  (:gen-class)
   (:require [a-proxy-mate.scryfall-api :as api]
             [a-proxy-mate.thermal-printer :as tp]))
 
@@ -18,19 +17,17 @@
 
 (defn generate-proxy
   "Generate a proxy from a search term."
-  [search-term]
-  (-> search-term
+  [card-name]
+  (-> card-name
       api/memoized-search
       api/extract-details
       format-proxy))
 
-(defn -main
-  [& args]
-  (let [search-term (first args)
-        copies (if (second args)
-                 (read-string (second args))
-                 1)]
-    (doseq [i (range (int copies))]
-      (-> search-term
-          generate-proxy
-          tp/print-text))))
+(defn print-proxy-handler
+  "Handle a request from the server to print a number of copies of a
+  card."
+  [card-name copies]
+  (doseq [i (range copies)]
+    (-> card-name
+        generate-proxy
+        tp/print-text)))
