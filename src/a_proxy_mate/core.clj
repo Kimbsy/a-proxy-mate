@@ -31,3 +31,11 @@
     (-> card-name
         generate-proxy
         tp/print-text)))
+
+(defn print-decklist-handler
+  "Handle a request from the server to print a whole decklist."
+  [decklist]
+  (map (fn [row]
+         (let [[_ copies card-name] (re-matches #"(^\d+) (.*)" row)]
+           (print-proxy-handler card-name (read-string copies))))
+       decklist))

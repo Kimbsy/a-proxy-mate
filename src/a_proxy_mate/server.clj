@@ -24,12 +24,18 @@
              :swagger {:info {:title       "a-proxy-mate"
                               :description "Printing MTG proxies for fun and profit"}}
              :handler (swagger/create-swagger-handler)}}]
-     ["/print-proxy"
-      {:post {:summary    "print a number of proxies for a given card"
-              :parameters {:query {:card-name string?
-                                   :copies    int?}}
-              :handler    (fn [{{{:keys [card-name copies]} :query} :parameters}]
-                            (core/print-proxy-handler card-name copies))}}]]
+     ["/print" {:swagger {:tags ["Print"]}}
+      ["/proxy"
+       {:post {:summary    "Print a number of proxies for a given card"
+               :parameters {:query {:card-name string?
+                                    :copies    int?}}
+               :handler    (fn [{{{:keys [card-name copies]} :query} :parameters}]
+                             (core/print-proxy-handler card-name copies))}}]
+      ["/decklist"
+       {:post {:summary    "Print a number of proxies for a list of given cards"
+               :parameters {:body coll?}
+               :handler    (fn [{{:keys [body]} :parameters}]vector
+                             (core/print-decklist-handler body))}}]]]
 
     {:exception pretty/exception
      :data      {:coercion   reitit.coercion.spec/coercion
