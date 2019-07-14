@@ -35,7 +35,8 @@
   "The printer can't do all characters."
   [text]
   (-> text
-      (clojure.string/replace "—" "-")))
+      (s/replace "—" "-")
+      (s/replace "−" "-")))
 
 (defn lr-align
   "Construct a string with one part aligned left and the other aligned
