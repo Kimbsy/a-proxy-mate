@@ -10,18 +10,25 @@
    [:td (:copies card)]
    [:td (:name card)]
    [:td
-    [:button.btn.btn-success o/plus]
-    [:button.btn.btn-warning o/dash]
-    [:button.btn.btn-danger o/trashcan]]])
+    [:button.btn.btn-lg.btn-success
+     {:style {:margin "0 5px"}}
+     o/plus]
+    [:button.btn.btn-lg.btn-warning
+     {:style {:margin "0 5px"}}
+     o/dash]
+    [:button.btn.btn-lg.btn-danger
+     {:style {:margin "0 5px"}}
+     o/trashcan]]])
 
 (defn card-table
   []
   (let [cards @(re-frame/subscribe [::subs/cards])]
     [:table.table
      [:thead
-      [:th "copies"]
-      [:th "card name"]
-      [:th "add/remove/remove-all"]]
+      [:tr
+       [:th "copies"]
+       [:th "card name"]
+       [:th "add | remove | remove-all"]]]
      [:tbody
       (map card-row cards)]]))
 
@@ -34,7 +41,9 @@
 
 (defn main-panel
   []
-  [:div
-   [:h1 "a-proxy-mate"]
+  [:div.container
+   [:h1
+    [:code "a-proxy-mate"]]
+   [:p [:i "> just as good as the real thing"]]
    (card-table)
    (card-search-box)])
