@@ -38,10 +38,27 @@
 
 (defn card-search-box
   []
-  [:div.input-group.mb-3
-   [:div.input-group-prepend
-    [:span.input-group-text "Add Card:"]]
-   [:input.form-control {:placeholder "keeper of the..."}]])
+  (let [current-search-value @(re-frame/subscribe [::subs/current-search-value])
+        button-class (if (< 0 (count current-search-value))
+                 "btn-primary"
+                 "btn-outline-secondary")]
+    [:div.input-group.mb-3
+     [:div.input-group-prepend
+      [:button.btn
+       {:type "button"
+        :class button-class
+        :onClick #(re-frame/dispatch [::events/search-submitted])}
+       "Add Card"]]
+     [:input.form-control
+      {:placeholder "keeper of the..."
+       :value current-search-value
+       :on-change #(re-frame/dispatch [::events/search-changed (-> % .-target .-value)])
+       :on-key-press #(when (= 13 (.-charCode %))
+                        (re-frame/dispatch [::events/search-submitted]))}]]))
+
+(defn print-button
+  []
+  [:button.btn.btn-primary.btn-lg.btn-block "PRINT"])
 
 (defn main-panel
   []
@@ -50,4 +67,5 @@
     [:code "a-proxy-mate"]]
    [:p [:i "> just as good as the real thing"]]
    (card-table)
-   (card-search-box)])
+   (card-search-box)
+   (print-button)])

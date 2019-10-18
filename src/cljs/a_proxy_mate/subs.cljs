@@ -12,3 +12,8 @@
  (fn [{:keys [cards] :as db}]
    (into {} (filter #(> (second %) 0)
                     cards))))
+
+(re-frame/reg-sub
+ ::current-search-value
+ (fn [db]
+   (:current-search-value db)))
