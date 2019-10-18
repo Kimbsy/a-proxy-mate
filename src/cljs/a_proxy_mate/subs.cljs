@@ -9,5 +9,6 @@
 
 (re-frame/reg-sub
  ::cards
- (fn [db]
-   (:cards db)))
+ (fn [{:keys [cards] :as db}]
+   (into {} (filter #(> (second %) 0)
+                    cards))))
