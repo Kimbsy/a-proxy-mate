@@ -4,8 +4,7 @@
    [re-frame.core :as re-frame]
    [a-proxy-mate.events :as events]
    [a-proxy-mate.views :as views]
-   [a-proxy-mate.config :as config]
-   ))
+   [a-proxy-mate.config :as config]))
 
 
 (defn dev-setup []
