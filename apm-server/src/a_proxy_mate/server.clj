@@ -12,49 +12,55 @@
             [reitit.swagger :as swagger]
             [reitit.swagger-ui :as swagger-ui]
             [ring.adapter.jetty :as jetty]
+            [ring.middleware.cors :as cors]
             [a-proxy-mate.core :as core]))
 
 (defonce sys (atom nil))
 
 (def app
-  (ring/ring-handler
-   (ring/router
-    [["/swagger.json"
-      {:get {:no-doc  true
-             :swagger {:info {:title       "a-proxy-mate"
-                              :description "Printing MTG proxies for fun and profit"}}
-             :handler (swagger/create-swagger-handler)}}]
-     ["/print" {:swagger {:tags ["Print"]}}
-      ["/proxy"
-       {:post {:summary    "Print a number of proxies for a given card"
-               :parameters {:query {:card-name string?
-                                    :copies    int?}}
-               :handler    (fn [{{{:keys [card-name copies]} :query} :parameters}]
-                             (core/print-proxy-handler card-name copies))}}]
-      ["/decklist"
-       {:post {:summary    "Print a number of proxies for a list of given cards"
-               :parameters {:body coll?}
-               :handler    (fn [{{:keys [body]} :parameters}]vector
-                             (core/print-decklist-handler body))}}]]]
+  (->
+   (ring/ring-handler
+    (ring/router
+     [["/swagger.json"
+       {:get {:no-doc  true
+              :swagger {:info {:title       "a-proxy-mate"
+                               :description "Printing MTG proxies for fun and profit"}}
+              :handler (swagger/create-swagger-handler)}}]
+      ["/print" {:swagger {:tags ["Print"]}}
+       ["/proxy"
+        {:post {:summary    "Print a number of proxies for a given card"
+                :parameters {:query {:card-name string?
+                                     :copies    int?}}
+                :handler    (fn [{{{:keys [card-name copies]} :query} :parameters}]
+                              (core/print-proxy-handler card-name copies))}}]
+       ["/decklist"
+        {:post {:summary    "Print a number of proxies for a list of given cards"
+                :parameters {:body coll?}
+                :handler    (fn [{{:keys [body]} :parameters}]
+                              (core/print-decklist-handler body))}}]]]
 
-    {:exception pretty/exception
-     :data      {:coercion   reitit.coercion.spec/coercion
-                 :muuntaja   m/instance
-                 :middleware [swagger/swagger-feature
-                              parameters/parameters-middleware
-                              muuntaja/format-negotiate-middleware
-                              muuntaja/format-response-middleware
-                              exception/exception-middleware
-                              muuntaja/format-request-middleware
-                              coercion/coerce-response-middleware
-                              coercion/coerce-request-middleware
-                              multipart/multipart-middleware]}})
-   (ring/routes
-    (swagger-ui/create-swagger-ui-handler
-     {:path   "/"
-      :config {:validationUrl    nil
-               :operationsSorter "alpha"}})
-    (ring/create-default-handler))))
+     {:exception pretty/exception
+      :data      {:coercion   reitit.coercion.spec/coercion
+                  :muuntaja   m/instance
+                  :middleware [swagger/swagger-feature
+                               parameters/parameters-middleware
+                               muuntaja/format-negotiate-middleware
+                               muuntaja/format-response-middleware
+                               exception/exception-middleware
+                               muuntaja/format-request-middleware
+                               coercion/coerce-response-middleware
+                               coercion/coerce-request-middleware
+                               multipart/multipart-middleware]}})
+    (ring/routes
+     (swagger-ui/create-swagger-ui-handler
+      {:path   "/"
+       :config {:validationUrl    nil
+                :operationsSorter "alpha"}})
+     (ring/create-default-handler)))
+   (cors/wrap-cors
+    :access-control-allow-origin  [#".*"]
+    :access-control-allow-headers ["Content-Type"]
+    :access-control-allow-methods [:get :put :post :delete :options])))
 
 (defn start
   []

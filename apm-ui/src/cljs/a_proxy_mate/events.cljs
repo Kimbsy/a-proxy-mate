@@ -1,8 +1,11 @@
 (ns a-proxy-mate.events
+  (:require-macros
+   [cljs.core.async.macros :refer [go]])
   (:require
    [re-frame.core :as re-frame]
    [a-proxy-mate.db :as db]
-   ))
+   [cljs.core.async :refer [<!]]
+   [cljs-http.client :as http]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -37,3 +40,11 @@
          (assoc-in [:cards current-search-value] 1)
          (assoc :current-search-value ""))
      db)))
+
+(re-frame/reg-event-fx
+ ::print
+ (fn [{:keys [db]} _]
+   (prn (:cards db))
+   (http/post "http://localhost:3000"
+              {:with-credentials? false
+               :json-params (:cards db)})))

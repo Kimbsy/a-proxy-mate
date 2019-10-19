@@ -8,6 +8,7 @@
                  [metosin/reitit "0.3.9"]
                  [org.clojure/clojure "1.10.0"]
                  [org.clojure/data.json "0.2.6"]
+                 [ring-cors "0.1.13"]
                  [ring/ring-jetty-adapter "1.7.1"]]
   :main ^:skip-aot a-proxy-mate.server
   :target-path "target/%s"

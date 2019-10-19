@@ -1,5 +1,6 @@
 (defproject a-proxy-mate "0.1.0-SNAPSHOT"
-  :dependencies [[hiccup-icons "0.4.1"]
+  :dependencies [[cljs-http "0.1.46"]
+                 [hiccup-icons "0.4.1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :exclusions [com.google.javascript/closure-compiler-unshaded
                                                                     org.clojure/google-closure-library]]
