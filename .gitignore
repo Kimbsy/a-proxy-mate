@@ -1,6 +1,8 @@
-node_modules/
-package.json
-resources/public/js
-.shadow-cljs/
-shadow-cljs.edn
-target/
+apm-server/a-proxy-mate.pid
+apm-server/target
+apm-ui/node_modules/
+apm-ui/package.json
+apm-ui/resources/public/js
+apm-ui/.shadow-cljs/
+apm-ui/shadow-cljs.edn
+apm-ui/target/
