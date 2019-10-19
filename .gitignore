@@ -1,5 +1,6 @@
-apm-server/a-proxy-mate.pid
+apm-server/apm-server.pid
 apm-server/target
+apm-ui/apm-ui.pid
 apm-ui/node_modules/
 apm-ui/package.json
 apm-ui/resources/public/js

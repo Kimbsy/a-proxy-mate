@@ -1,4 +1,4 @@
 #!/bin/bash
 
-kill -9 $(cat a-proxy-mate.pid)
-> a-proxy-mate.pid
+kill -9 $(cat apm-server.pid)
+> apm-server.pid
