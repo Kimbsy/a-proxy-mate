@@ -1,4 +1,5 @@
 apm-server/apm-server.pid
+apm-server/.nrepl-port
 apm-server/target
 apm-ui/apm-ui.pid
 apm-ui/node_modules/

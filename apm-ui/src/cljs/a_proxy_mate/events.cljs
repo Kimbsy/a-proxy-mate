@@ -41,10 +41,16 @@
          (assoc :current-search-value ""))
      db)))
 
+(defn- format-output
+  [[name copies]]
+  {:name name
+   :copies copies})
+
 (re-frame/reg-event-fx
  ::print
  (fn [{:keys [db]} _]
-   (prn (:cards db))
-   (http/post "http://localhost:3000"
+   (http/post "http://localhost:3000/print/decklist"
               {:with-credentials? false
-               :json-params (:cards db)})))
+               :json-params (->> (:cards db)
+                                 (map format-output)
+                                 (filter #(< 0 (:copies %))))})))

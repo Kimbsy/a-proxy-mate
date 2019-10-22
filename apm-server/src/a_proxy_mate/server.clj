@@ -58,9 +58,9 @@
                 :operationsSorter "alpha"}})
      (ring/create-default-handler)))
    (cors/wrap-cors
-    :access-control-allow-origin  [#".*"]
+    :access-control-allow-origin  [#"http://localhost.*"]
     :access-control-allow-headers ["Content-Type"]
-    :access-control-allow-methods [:get :put :post :delete :options])))
+    :access-control-allow-methods [:post])))
 
 (defn start
   []
