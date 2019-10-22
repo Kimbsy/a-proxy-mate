@@ -3,7 +3,6 @@ apm-server/.nrepl-port
 apm-server/target
 apm-ui/apm-ui.pid
 apm-ui/node_modules/
-apm-ui/package.json
 apm-ui/resources/public/js
 apm-ui/.shadow-cljs/
 apm-ui/shadow-cljs.edn
