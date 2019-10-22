@@ -6,3 +6,4 @@ apm-ui/node_modules/
 apm-ui/resources/public/js
 apm-ui/.shadow-cljs/
 apm-ui/target/
+.lein-repl-history

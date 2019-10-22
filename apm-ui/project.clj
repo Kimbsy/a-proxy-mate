@@ -12,6 +12,8 @@
 
   :min-lein-version "2.5.3"
 
+  :jvm-opts ["-Xmx700m"]
+
   :source-paths ["src/clj" "src/cljs"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]

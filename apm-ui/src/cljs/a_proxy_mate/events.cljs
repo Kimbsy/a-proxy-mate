@@ -49,7 +49,7 @@
 (re-frame/reg-event-fx
  ::print
  (fn [{:keys [db]} _]
-   (http/post "http://localhost:3000/print/decklist"
+   (http/post "http://192.168.0.45:3000/print/decklist"
               {:with-credentials? false
                :json-params (->> (:cards db)
                                  (map format-output)
