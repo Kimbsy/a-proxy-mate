@@ -27,6 +27,7 @@
   "Handle a request from the server to print a number of copies of a
   card."
   [card-name copies]
+  (tp/setup)
   (doseq [i (range copies)]
     (-> card-name
         generate-proxy

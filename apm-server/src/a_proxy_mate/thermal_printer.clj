@@ -17,6 +17,12 @@
        text
        (char 27) (char 69) (char 0)))
 
+(defn big-ass
+  [text]
+  (str (char 29) (char 33) (char 17)
+       text
+       (char 29) (char 33) (char 0)))
+
 ;; @TODO: stop it splitting words? maybe add hyphens?
 (defn wrap-line
   [line]
@@ -48,6 +54,17 @@
     (str left-text
          (apply str (take gap-count (repeat " ")))
          right-text)))
+
+(defn setup
+  []
+  (Thread/sleep 300)
+  (let [setup (str (char 27) (char 64)  ; reset
+                   (char 27) (char 55)  ; enter setup
+                   (char 80) (char 80) (char 80) ; max dots, heat time, heat interval
+                   (char 18) (char 35) #_(char 35)
+                   )
+        ]
+    (spit serial-file-descriptor setup)))
 
 (defn print-text
   "Send text over the serial port to the printer."
